@@ -7,7 +7,10 @@ import $ from './view/getElement'
   const defaultInitParams = {
     url: 'http://localhost:3000/users',
     theme: 'light',
-    searchField: 'firstName'
+    searchField: 'firstName',
+    sortField: 'firstName',
+    predicates: false,
+    currentPage: 0
   }
   arr.forEach(function (item) {
     if (item.hasOwnProperty('tableInit')) {

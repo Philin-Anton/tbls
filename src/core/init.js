@@ -8,7 +8,13 @@ import pagination from './view/templates/pagination';
 import { dispatch, Store } from './store';
 
 function Init(initParams = {}) {
-    const store = new Store({ initParams: initParams, dispatch: dispatch });
+    const response = {
+        searchField: initParams.searchField,
+        sortField: initParams.sortField,
+        predicates: initParams.predicates,
+        currentPage: initParams.currentPage
+    };
+    const store = new Store({ initParams: initParams, dispatch: dispatch, response: response});
     
     const docFrag = wrapper(store, {
         children: [

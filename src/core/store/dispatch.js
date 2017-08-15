@@ -5,7 +5,10 @@ import Filter from 'worker-loader!../workers/filter';
 
 import EventDispatcher from '../events/EventDispatcher';
 
+import Store from './store';
+
 function dispatch(store, actions){
+    store = new Store(store);
     const { initParams } = store;
 
     function createEvetName(name){
@@ -24,7 +27,9 @@ function dispatch(store, actions){
                 const eventDispatcher = new EventDispatcher();
                 debugger;
                 store.response = data.response;
-                store.catchResponse = data.catchResponse;
+                if(typeof data.catchResponse == 'object'){
+                    store.catchResponse = data.catchResponse;
+                }
                 eventDispatcher.trigger(createEvetName('onRenderTable'), store);
                 eventDispatcher.trigger(createEvetName('onRenderPagination'), store);
             });
@@ -32,11 +37,17 @@ function dispatch(store, actions){
         }
         case 'LOAD_TABLE': {
             const load = new Load();
-            load.postMessage({url: initParams.url});
+            const responses={
+                response: store.response,
+                catchResponse: store.catchResponse
+            }
+            load.postMessage({url: initParams.url, responses});
             load.addEventListener('message', ({data})=>{
                 const eventDispatcher = new EventDispatcher();
                 store.response = data.response;
-                store.catchResponse = data.catchResponse;
+                if(typeof data.catchResponse == 'object'){
+                    store.catchResponse = data.catchResponse;
+                }
                 eventDispatcher.trigger(createEvetName('onRenderTable'), store);
                 eventDispatcher.trigger(createEvetName('onRenderPagination'), store);
             });

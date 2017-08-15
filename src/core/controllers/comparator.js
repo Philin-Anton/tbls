@@ -27,7 +27,7 @@ function comparator(a, b, key, flag) {
     }
     if (typeof a[0] === 'object' || typeof b[0] === 'object') {
       return flag ? b.length - a.length : a.length - b.length;
-    }
+    }    
     if (typeof a === 'string' && typeof b === 'string') {
       a[0].replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
         ax.push([$1 || Infinity, $2 || '']);

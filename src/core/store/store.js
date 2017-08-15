@@ -7,13 +7,15 @@ const model = {
         users: [],
         currentPage: 0,
         total: 0,
-        pageSize: 15
+        pageSize: 15,
+        amountPages: 0
     },
     response: {
         users: [],
         currentPage: 0,
         total: 0,
-        pageSize: 15
+        pageSize: 15,
+        amountPages: 0
     }
 }
 

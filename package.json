@@ -14,7 +14,7 @@
     "build:prod": "node_modules/.bin/webpack --env=prod",
     "prod": "npm run clean & npm run build:prod",
     "start": "node server.js --env=dev",
-    "start:back": "node_modules/.bin/babel-node --presets es2015 back-end.js --limit=1000"
+    "start:back": "node_modules/.bin/babel-node --presets es2015 back-end.js --limit=100"
   },
   "babel": {
     "presets": [
@@ -24,7 +24,6 @@
   "author": "Anton Philin",
   "license": "ISC",
   "devDependencies": {
-    "babel": "^6.23.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",

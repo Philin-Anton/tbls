@@ -23,7 +23,7 @@ function renderTd(store, props) {
             className: 'td'
         }, 
         ...props
-    })
+    });
 
     return tbody.getElem();
 }
@@ -67,6 +67,29 @@ function renderThead(store, props) {
     return thead.getElem();
 }
 
+function listen(store){
+    return (event)=>{
+        const sort = event.target.dataset.sort;
+        let predicates = event.target.dataset.predicates;
+        if(typeof predicates == 'string'){
+            if(JSON.parse(event.target.dataset.predicates) == true){
+                predicates = false;
+            }else{
+                predicates = true;
+            }
+        } else {
+            predicates = false;
+        }
+        store.dispatch({
+            type: 'FILTER_TABLE',
+            payload: {
+                sortField: sort,
+                predicates: predicates
+            }
+        })
+    }
+}
+
 function renderTable(store, props) {
     const table = new CreateComponent({
         store: store,
@@ -93,10 +116,11 @@ function table(store, props={}) {
 
     addEventListener(`onRenderTable:${initParams.name}`, (event) => {
         const { detail: store } = event;
-        const { initParams: {sequenceColumn}, response } = store;
+        const { initParams: {sequenceColumn}, response: { users, sortField, predicates }} = store;
+        
         const validField = Object.keys(sequenceColumn);
         const newTbody = renderTbody(store, {
-            children: response.users.map((user)=>(
+            children: users.map((user)=>(
                 renderTr(store, {
                     children: Object.keys(user).map((field)=>{
                         const value = user[field];
@@ -112,11 +136,19 @@ function table(store, props={}) {
         const newThead = renderThead(store, {
             children: (
                 renderTr(store, {
+                    isEventsPushing: true,
+                    onClick: listen(store),             
                     children: validField.map((field)=>{
                         const value = sequenceColumn[field];
                         const isTextNode = typeof value == 'string' || typeof value == 'number';
-                        if(!validField.includes(field)) return 
+                        if(!validField.includes(field)) return;
+                        const sort = field == sortField && ( predicates == 'true' && 'sort up' || 'sort down') || '';
                         return renderTh(store, {
+                            domAttr: {
+                                className: `th ${sort}`,
+                                'data-sort': field,
+                                [field == sortField && 'data-predicates']: predicates
+                            },  
                             children: document.createTextNode(isTextNode && String(value) || '')
                         })
                     }).filter(i=>i)
@@ -124,17 +156,9 @@ function table(store, props={}) {
             )
         });
         thead.replaceWith(newThead);
-        tbody.replaceWith(newTbody)
+        tbody.replaceWith(newTbody);
         thead = newThead;
         tbody = newTbody
-    });
-
-    addEventListener('onRenderTbody', (event) => {
-        const {detail: store } = event;
-        const newTbody = renderTbody(store, {
-            children: []
-        });
-        tbody.replaceWith(newTbody)
     });
 
     return table;

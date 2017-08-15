@@ -26,7 +26,28 @@
                 background-color: #707070;
                 .light.th{
                     text-align: left;
-                    color: #fbfbfb
+                    color: #fbfbfb;
+                    cursor: pointer;
+                    &.sort {
+                        position: relative;
+                        &:before {
+                            content: '';
+                            position: absolute;
+                            right: 10px;
+                            top: calc(100% - 12px); 
+                            border-left: 8px solid transparent;
+                            border-right: 8px solid transparent;
+                            display: block;
+                            width: 0;
+                            height: 0;
+                        }
+                        &.up:before {
+                            border-bottom: 6px solid red;
+                        }
+                        &.down:before {
+                            border-top: 6px solid red;
+                        }
+                    }
                 }
             }
         }
@@ -41,6 +62,14 @@
                 table-layout: fixed;
                 border-bottom: 1px solid rgb(224, 224, 224);
             }
+        }
+    }
+}
+.light.parination-wrapper{
+    display: block;
+    .light.parination-button{
+        &.active {
+            background: red
         }
     }
 }
