@@ -49,13 +49,6 @@ const config = Object.assign({}, baseConfig, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-        name: 'manifest',
-        chunks: Infinity,
-         minChunks: function (module) {
-            return isExternal(module);
-        }
-    }),
     new HtmlWebpackPlugin({
         title: 'Table Plugin',
         hash: true,

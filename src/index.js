@@ -1,7 +1,9 @@
 'use strict';
 
-import './core/view/tableInit';
-import $ from './core/view/getElement'
+import { $ } from'./core/entry';
 window.$ = $;
 
-$('#table-test').tableInit();
+$('#table-test').tableInit({
+    name: 'test',
+    sequenceColumn: { firstName: 'First name', lastName:'Last name', email:'Email' }
+});

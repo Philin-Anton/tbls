@@ -1,0 +1,32 @@
+.light.wrapper {
+  background: #ccc; }
+
+.light.search-wrapper {
+  float: right; }
+
+.light.input {
+  display: inline-block; }
+
+.light.button {
+  display: inline-block; }
+
+.light.table {
+  table-layout: fixed; }
+
+.light.thead {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%; }
+  .light.thead .light.tr {
+    background-color: #707070; }
+
+.light.tbody {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%; }
+  .light.tbody .light.tr {
+    border-bottom: 1px solid #e0e0e0; }
+
+/*# sourceMappingURL=style-935e390a.css.map*/

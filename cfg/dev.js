@@ -26,7 +26,7 @@ const config = Object.assign({}, baseConfig, {
         new webpack.DefinePlugin({'process.env.NODE_ENV': JSON.stringify('development')}),
         new webpack.NoEmitOnErrorsPlugin(),
         new HtmlWebpackPlugin({hash: true, template: '../src/index.html'}),
-        new ExtractTextPlugin('./stylesheet/style-[contenthash:8].css')
+        new ExtractTextPlugin('./styles/style-[contenthash:8].css')
     ]
 });
 

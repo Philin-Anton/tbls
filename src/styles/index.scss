@@ -1,0 +1,46 @@
+:local {
+    .light.wrapper {
+        display: block;
+    }
+    .light.search-wrapper {
+        float: right;
+        .light.input {
+            display: inline-block;
+        }
+        .light.button {
+            display: inline-block;
+        }
+    }
+    .light.table {
+        table-layout: fixed;
+        width: 100%;
+        .light.thead {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 100%;
+            .light.tr {
+                width: 100%;
+                display: table;
+                table-layout: fixed;
+                background-color: #707070;
+                .light.th{
+                    text-align: left;
+                    color: #fbfbfb
+                }
+            }
+        }
+        .light.tbody {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 100%;
+            .light.tr {
+                width: 100%;
+                display: table;
+                table-layout: fixed;
+                border-bottom: 1px solid rgb(224, 224, 224);
+            }
+        }
+    }
+}

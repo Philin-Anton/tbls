@@ -6,12 +6,10 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
     context: sourcePath,
     devtool: 'eval',
-    entry: {
-        'app': [
-            'babel-polyfill',
-            './index.js'
-        ]
-    },
+    entry: [
+        'babel-polyfill',
+        './index.js'
+    ],
     output: {
         path: path.resolve(__dirname, '../dist'),
         filename: 'assets/bundle.js',
@@ -54,18 +52,18 @@ module.exports = {
                             options: {
                                 module: true, // css-loader 0.14.5 compatible
                                 modules: true,
-                                localIdentName: '[hash:base64:5]',
-                            },
+                                localIdentName: '[local]'
+                            }
                         },
                         {
                             loader: 'sass-loader',
                             options: {
                                 outputStyle: 'collapsed',
                                 sourceMap: true,
-                                includePaths: [sourcePath],
-                            },
-                        },
-                    ],
+                                includePaths: [sourcePath]
+                            }
+                        }
+                    ]
                 })
             }
         ]

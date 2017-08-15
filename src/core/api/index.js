@@ -1,1 +1,3 @@
-export { ajax } from './ajax';
+'use strict';
+
+export { default as ajax } from './ajax';

@@ -1,18 +1,18 @@
 'use strict';
 
-import '../polyfill';
-import search from './search';
+import CreateComponent from '../createComponent';
 
-function wrapper(docFrag, params ){
-    const { theme } = params
-    const newDiv = document.createElement('div', {
-        class: theme
-    });
+function wrapper(store, props={}){
+    const wrapper = new CreateComponent({
+        store: store,
+        tagName: 'div',
+        domAttr: {
+            className: 'wrapper'
+        },
+        ...props
+    })
 
-    newDiv.appendChild(search());
-    docFrag.appendChild(newDiv);
-
-    return docFrag
+    return wrapper.getElem();
 }
 
 export default wrapper;
