@@ -1,7 +1,6 @@
 'use strict';
 
 import ajax from '../api/ajax'
-import paginate from '../controllers/pagination'
 /*global onmessage*/
 /*global postMessage*/
 /*eslint no-unused-vars: ["error", { "vars": "local"}]*/
@@ -20,18 +19,9 @@ onmessage = function(event) {
         }
     }).then(
         (result)=>{
-            const { amountPages, data, currentPage } = paginate(result.response.users, result.response.currentPage || 0, result.response.pageSize);
             result = {
                 response: {
-                    ...result.response,
-                    users: data,
-                    currentPage: currentPage,
-                    amountPages: amountPages,
-                    searchField: searchField,
-                    searchText: searchText,
-                    sortField: sortField,
-                    predicates: predicates,
-                    currentPage: currentPage
+                    ...result.response
                 },
                 catchResponse: result.response
             }

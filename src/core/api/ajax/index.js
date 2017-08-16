@@ -26,12 +26,13 @@ function request(method){
     typeof params == 'function' && (callback = params);
     return new Promise ((respons, reject)=>{
       const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = callback || onReadyStateChange(respons, reject);
       if(params && typeof params.query == 'object'){
         xhr.open(method, `${url}${serialize(params.query)}`, true);
       }else{
         xhr.open(method, url, true);
       }
+      xhr.setRequestHeader('Content-type', 'application/json');
+      xhr.onreadystatechange = callback || onReadyStateChange(respons, reject);
       if(params && typeof params.data == 'object'){
         const data = JSON.stringify(params.data);
         xhr.send(data);

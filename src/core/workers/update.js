@@ -2,40 +2,57 @@
 
 import ajax from '../api/ajax'
 import '../polyfill/isValid';
-
 import search from '../controllers/search'
+import update from '../controllers/update'
 import comparator from '../controllers/comparator'
 import paginate from '../controllers/pagination'
 /*global onmessage*/
 /*global postMessage*/
 /*eslint no-unused-vars: ["error", { "vars": "local"}]*/
 onmessage = function(event) {
-    const { url, responses, payload } = event.data;
+    const { url, responses, payload={}} = event.data;
     const { response, catchResponse } = responses;
-    let { searchField, searchText, sortField, predicates, currentPage } = payload;
+    let { searchField, searchText, sortField, predicates, currentPage, id, value, fieldName } = payload;
     typeof searchField != 'string' && (searchField = response.searchField);
     typeof searchText != 'string' && (searchText = response.searchText || '');
     typeof sortField != 'string' && (sortField = response.sortField);
-    typeof currentPage != 'number' && (currentPage = response.currentPage || 0);
-    typeof predicates != 'boolean' && (predicates = JSON.parse(response.predicates || false));
-
+    typeof predicates != 'boolean' && (predicates = response.predicates);
+    typeof currentPage != 'number' && (currentPage = response.currentPage);
      if(catchResponse.total > 100){
-        ajax.get(url, {
+        ajax.put(url, {
             query: {
                 searchField, searchText, sortField, predicates, currentPage
+            },
+            data:{
+                id, value, fieldName
             }
         }).then(
-            (data) => {
-                data = {...data, catchResponse: data.response }
-                postMessage(data);
+            (result)=>{
+                const { amountPages, data, currentPage } = paginate(result.response.users, result.response.currentPage || 0, result.response.pageSize);
+                result = {
+                    response: {
+                        ...result.response,
+                        users: data,
+                        currentPage: currentPage,
+                        amountPages: amountPages,
+                        searchField: searchField,
+                        searchText: searchText,
+                        sortField: sortField,
+                        predicates: predicates,
+                        currentPage: currentPage
+                    },
+                    catchResponse: result.response
+                }
+                postMessage(result);
             },
             (data)=>{
                 data = {...data, catchResponse: data.response }
                 postMessage(data);
             }
         )
-    } else {
-        if (searchField && searchText && sortField && typeof predicates == 'boolean') {
+     } else {
+         catchResponse.users = catchResponse.users.map(update(id, fieldName, value));
+         if (searchField && searchText && sortField && typeof predicates == 'boolean') {
             let users = catchResponse.users.filter(search(searchField, searchText));
             users = users.sort((a, b) => comparator(a, b, sortField));
             if(predicates){
@@ -112,5 +129,5 @@ onmessage = function(event) {
                 }
             });
         }
-    }
+     }
 }

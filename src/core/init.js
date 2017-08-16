@@ -5,6 +5,7 @@ import wrapper from './view/templates/wrapper';
 import search from './view/templates/search';
 import table from './view/templates/table';
 import pagination from './view/templates/pagination';
+import columnControls from './view/templates/columnControls';
 import { dispatch, Store } from './store';
 
 function Init(initParams = {}) {
@@ -19,6 +20,7 @@ function Init(initParams = {}) {
     const docFrag = wrapper(store, {
         children: [
             search(store),
+            columnControls(store),
             table(store),
             pagination(store)
         ]

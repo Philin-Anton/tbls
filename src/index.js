@@ -8,5 +8,39 @@ $('#table-test').tableInit({
     searchField: 'firstName',
     sortField: 'firstName',
     isAsc: false,
-    sequenceColumn: { firstName: 'First name', lastName:'Last name', email:'Email' }
+    sequenceColumn: [
+        {
+            fieldName: 'firstName',
+            value: 'First name'
+        },
+        {
+            fieldName: 'lastName',
+            value: 'Last name'
+        },
+        {
+            fieldName: 'email',
+            value: 'Email'
+        }
+    ]
 });
+
+// document.getElementById('table-test2').tableInit({ //its work
+//     name: 'test2',
+//     searchField: 'firstName',
+//     sortField: 'firstName',
+//     isAsc: false,
+//     sequenceColumn: [
+//         {
+//             fieldName: 'firstName',
+//             value: 'First name'
+//         },
+//         {
+//             fieldName: 'lastName',
+//             value: 'Last name'
+//         },
+//         {
+//             fieldName: 'email',
+//             value: 'Email'
+//         }
+//     ]
+// });

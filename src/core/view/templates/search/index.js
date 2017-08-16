@@ -8,7 +8,7 @@ function search(store/*, props*/) {
             store.dispatch({
                 type: 'FILTER_TABLE',
                 payload: {
-                    searchText: input.value,
+                    searchText: input.value.trim(),
                     searchField: searchField
                 }
             })

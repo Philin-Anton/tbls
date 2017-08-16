@@ -2,6 +2,7 @@
 
 import Load from 'worker-loader!../workers/load';
 import Filter from 'worker-loader!../workers/filter';
+import Update from 'worker-loader!../workers/update';
 
 import EventDispatcher from '../events/EventDispatcher';
 
@@ -16,6 +17,34 @@ function dispatch(store, actions){
     }
 
     switch(actions.type){
+        case 'CONTROL_COLUMN': {
+            const { isVisible, value, fieldName, index } = actions.payload;
+            if(isVisible){
+                initParams.sequenceColumn.splice(index, 0, {value, fieldName});
+            } else {
+                initParams.sequenceColumn.splice(index, 1);
+            }
+            const eventDispatcher = new EventDispatcher();
+            eventDispatcher.trigger(createEvetName('onRenderTable'), store);
+
+        }
+        case 'EDIT_TABLE': {
+            const update = new Update();
+            const responses={
+                response: store.response,
+                catchResponse: store.catchResponse
+            }
+            update.postMessage({url: initParams.url, responses:responses, payload: actions.payload});
+            update.addEventListener('message', ({data})=>{
+                store.response = data.response;
+                if(typeof data.catchResponse == 'object'){
+                    store.catchResponse = data.catchResponse;
+                }
+                //const eventDispatcher = new EventDispatcher();
+                //eventDispatcher.trigger(createEvetName('onRenderTable'), store);
+            });
+            break;
+        }
         case 'FILTER_TABLE': {
             const filter = new Filter();
             const responses={
@@ -25,7 +54,6 @@ function dispatch(store, actions){
             filter.postMessage({url: initParams.url, responses:responses, payload: actions.payload});
             filter.addEventListener('message', ({data})=>{
                 const eventDispatcher = new EventDispatcher();
-                debugger;
                 store.response = data.response;
                 if(typeof data.catchResponse == 'object'){
                     store.catchResponse = data.catchResponse;

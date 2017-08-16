@@ -3,12 +3,27 @@
         display: block;
     }
     .light.search-wrapper {
-        float: right;
+        text-align: right;
         .light.input {
             display: inline-block;
         }
         .light.button {
             display: inline-block;
+        }
+    }
+    .light.control-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around; 
+        border: 1px solid #bbb; 
+        background: #bbb;
+        padding: 10px 0;
+        margin: 4px 0 2px;
+        .light.control-label{
+            .light.control-checkbox{
+                display: inline-block;
+                vertical-align: middle;
+            }
         }
     }
     .light.table {
@@ -61,6 +76,18 @@
                 display: table;
                 table-layout: fixed;
                 border-bottom: 1px solid rgb(224, 224, 224);
+                .light.td.edit{
+                    $buttonWidth: 58px;
+                    padding: 0;
+                    .light.table.input{
+                        display: inline-block;
+                        width: calc(100% - #{2*$buttonWidth} - 4px);
+                    }
+                    .light.table.button{
+                        display: inline-block;
+                        width: $buttonWidth;
+                    }
+                }
             }
         }
     }

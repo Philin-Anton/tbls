@@ -1,10 +1,12 @@
 import search from './src/core/controllers/search';
 import comparator from './src/core/controllers/comparator';
 import paginate from './src/core/controllers/pagination';
+import update from './src/core/controllers/update';
 import express from 'express';
 import dummyjson from 'dummy-json';
 import './src/core/polyfill/isValid.js';
 
+var bodyParser = require('body-parser');
 var args = require('minimist')(process.argv.slice(2));
 var limit;
 
@@ -17,6 +19,12 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.use(bodyParser.json());
 
 if (args.limit) {
     limit = args.limit;
@@ -58,7 +66,7 @@ app.get('/users', function (req, res) {
             return res.json({
                 response: Object.assign({}, result, {
                     currentPage: currentPage,
-                    amountPages: amountPages,
+                    amountPages: amountPages
                 }),
                 error: null
             });
@@ -160,33 +168,127 @@ app.get('/users', function (req, res) {
     }
 });
 
-app.put('/users:id', function (req, res) {
-    if (req.params.id && req.body.fieldName && req.body.newValue) {
-        var result = response.map((item) => {
-            if (item.id == req.params.id) {
-                item[req.body.fieldName] = req.body.newValue
-            }
-        });
-        return res.json({
-            response: {
-                response: Object.assign({}, result, {
-                    currentPage: 0,
-                    total: response.users.length,
-                    pageSize: 15
-                }),
-                currentPage: 0,
+app.put('/users', function (req, res) {
+    res.set('Content-Type', 'application/json');
+    console.log(req, req.body);
+    const id = req.body.id;
+    const fieldName = req.body.fieldName;
+    const value = req.body.value;
+
+    response.users = response.users.map(update(id, fieldName, value));
+    switch (true) {
+        case Object.keys(req.query).length <= 0: {
+            var result = Object.assign({}, response, {
                 total: response.users.length,
                 pageSize: 15
-            },
-            error: null
-        });
-    }
-    return res.json({
-        response: null,
-        error: {
-            text: 'error text'
+            });
+            const {amountPages, data, currentPage} = paginate(result.users, result.currentPage || 0, result.pageSize);
+            if(response.users.length > 100){
+                result.users = data
+            }
+            return res.json({
+                response: Object.assign({}, result, {
+                    currentPage: currentPage,
+                    amountPages: amountPages
+                }),
+                error: null
+            });
         }
-    });
+        case Object.keys(req.query).length > 0: {
+            if (req.query.searchField && req.query.searchText && req.query.sortField && req.query.predicates) {
+                var users = response.users.filter(search(req.query.searchField, req.query.searchText));
+                users = users.sort((a, b) => comparator(a, b, req.query.sortField));
+                if(req.query.predicates && JSON.parse(req.query.predicates)){
+                    users = users.reverse();
+                }
+                var result = Object.assign({}, {users: users}, {
+                    total: response.users.length,
+                    pageSize: 15,
+                    searchField: req.query.searchField,
+                    searchText: req.query.searchText,
+                    sortField: req.query.sortField,
+                    predicates: req.query.predicates
+                });
+                const {amountPages, data, currentPage} = paginate(result.users, req.query.currentPage || 0, result.pageSize);
+                if(response.users.length > 100){
+                    result.users = data
+                }
+                return res.json({
+                    response: Object.assign({}, result, {
+                        currentPage: currentPage,
+                        amountPages: amountPages,
+                    }),
+                    error: null
+                });
+            }
+            if (req.query.searchField && req.query.searchText) {
+                var users = response.users.filter(search(req.query.searchField, req.query.searchText));
+                var result = Object.assign({}, {users: users}, {
+                    total: response.users.length,
+                    pageSize: 15,
+                    searchField: req.query.searchField,
+                    searchText: req.query.searchText,
+                    sortField: req.query.sortField,
+                    predicates: req.query.predicates
+                });
+                const {amountPages, data, currentPage} = paginate(result.users, req.query.currentPage || 0, result.pageSize);
+                if(response.users.length > 100){
+                    result.users = data
+                }
+                return res.json({
+                    response: Object.assign({}, result, {
+                        currentPage: currentPage,
+                        amountPages: amountPages,
+                    }),
+                    error: null
+                });
+            }
+            if (req.query.sortField && req.query.predicates) {
+                var users = response.users.sort((a, b) => comparator(a, b, req.query.sortField));
+                if(req.query.predicates && JSON.parse(req.query.predicates)){
+                    users = users.reverse();
+                }
+                var result = Object.assign({}, {users: users}, {
+                    total: response.users.length,
+                    pageSize: 15,
+                    searchField: req.query.searchField,
+                    searchText: req.query.searchText,
+                    sortField: req.query.sortField,
+                    predicates: req.query.predicates
+                });
+                const {amountPages, data, currentPage} = paginate(result.users, req.query.currentPage || 0, result.pageSize);
+                if(response.users.length > 100){
+                    result.users = data
+                }
+                return res.json({
+                    response: Object.assign({}, result, {
+                        currentPage: currentPage,
+                        amountPages: amountPages,
+                    }),
+                    error: null
+                });
+            }
+            var result = Object.assign({}, response, {
+                total: response.users.length,
+                pageSize: 15,
+                searchField: req.query.searchField,
+                searchText: req.query.searchText,
+                sortField: req.query.sortField,
+                predicates: req.query.predicates
+            });
+            const {amountPages, data, currentPage} = paginate(result.users, req.query.currentPage || 0, result.pageSize);
+            if(response.users.length > 100){
+                result.users = data
+            }
+            return res.json({
+                response: Object.assign({}, response, {
+                    currentPage: currentPage,
+                    amountPages: amountPages,
+                }),
+                error: null
+            });
+        }
+    }
 });
 
 app.listen(3000);
